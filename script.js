@@ -23,9 +23,9 @@ function guessTheNumber() {
 
     if (userInput === null) {
       let c = confirm(`у меня твой айпи ip, может еще раз?`);
-      if (c){
+      if (c) {
         guessTheNumber()();
-      } else{
+      } else {
         alert("...");
         alert("ты плохой..");
         return;
@@ -40,7 +40,9 @@ function guessTheNumber() {
     }
 
     if (number === secret) {
-      const playAgain = confirm("иншаллах сто лет здоровья ты угадал, давай еще разок братик");
+      const playAgain = confirm(
+        "иншаллах сто лет здоровья ты угадал, давай еще разок братик",
+      );
       if (playAgain) {
         guessTheNumber()(); // перезапуск
       } else {
