@@ -12,44 +12,87 @@ const appData = {
   fullPrice: 0,
   servicePercentPrice: 0,
 
+  // Проверка числовая божественная
   isNumber(num) {
     return !isNaN(parseFloat(num)) && isFinite(num);
+  },
+
+  // Проверка строки божественная
+  isValidString(str) {
+    if (!str || str.trim() === "") return false;
+    // попросил через нейронку накидать регулярку, явно сложнее с кучей проверок...
+    return /[^\d\s]/.test(str);
   },
 
   checkTheInput(str, def) {
     let input;
     do {
       let raw = prompt(str, def);
-      if (raw === null) return null;
+      if (raw === null) {
+        alert("введите значение");
+        continue;
+      }
       raw = raw.trim();
       if (raw === "") {
-        alert("Ошибка: пустая строка");
+        alert("пустая строка. введите положительное число.");
         continue;
       }
       input = Number(raw);
       if (!appData.isNumber(input) || input <= 0) {
-        alert("Ошибка, введите положительное число.");
+        alert("введите положительное число.");
+      } else {
+        return input;
       }
-    } while (!appData.isNumber(input) || input <= 0);
-    return input;
+    } while (true);
+  },
+
+  checkTheString(str, def) {
+    let result;
+    do {
+      let raw = prompt(str, def);
+      if (raw === null) {
+        alert("введите значение.");
+        continue;
+      }
+      result = raw.trim();
+      if (!appData.isValidString(result)) {
+        alert(
+          "вай братишка строка не может быть пустой или состоять только из цифр, введи текст (можно с цифрами).",
+        );
+        continue;
+      }
+      return result;
+    } while (true);
   },
 
   asking() {
-    appData.title = prompt("Как называется проект?", "абоба");
-    appData.screens = prompt("Какие типы экранов нужно разработать?", "хорошие, плохие");
-    appData.screenPrice = appData.checkTheInput("Сколько будет стоить данная работа?", "120000");
-    appData.adaptive = confirm("Нужен ли адаптив на сайте?");
+    appData.title = appData.checkTheString("Как называется проект?", "абоба");
     appData.title = appData.getTitle(appData.title);
+
+    appData.screens = appData.checkTheString(
+      "Какие типы экранов нужно разработать?",
+      "хорошие, плохие",
+    );
+
+    appData.screenPrice = appData.checkTheInput(
+      "Сколько будет стоить данная работа?",
+      "120000",
+    );
+
+    appData.adaptive = confirm("Нужен ли адаптив на сайте?");
   },
 
   getAllServicePrices() {
     let sum = 0;
     for (let i = 0; i < 2; i++) {
-      let service = prompt("Какой дополнительный тип услуги нужен?");
-      if (service === null) return sum;
+      let service = appData.checkTheString(
+        "Какой дополнительный тип услуги нужен?",
+        "дизайн",
+      );
       let price = appData.checkTheInput("Сколько это будет стоить?", "1000");
-      if (price === null) return sum;
       sum += price;
+      if (i === 0) appData.service1 = service;
+      else appData.service2 = service;
     }
     return sum;
   },
@@ -69,7 +112,7 @@ const appData = {
   },
 
   getRollbackMessage(price) {
-    if (price < 0) return "Что то пошло не так";
+    if (price < 0) return "Что-то пошло не так";
     if (price === 0) return "Скидка не предусмотрена";
     if (price >= 30000) return "Даем скидку в 10%";
     if (price >= 15000 && price < 30000) return "Даем скидку в 5%";
@@ -90,7 +133,9 @@ const appData = {
     appData.showTypeOf(appData.screens, "screens");
     console.log("Типы экранов для разработки:", appData.screens);
     console.log(appData.getRollbackMessage(appData.fullPrice));
-    console.log(`Стоимость за вычетом процента отката: ${appData.getServicePercentPrices()} руб.`);
+    console.log(
+      `Стоимость за вычетом процента отката: ${appData.getServicePercentPrices()} руб.`,
+    );
 
     console.log("\n=== Все свойства и методы объекта appData");
     for (let key in appData) {
@@ -108,7 +153,7 @@ const appData = {
     appData.fullPrice = appData.getFullPrice();
     appData.servicePercentPrice = appData.getServicePercentPrices();
     appData.logger();
-  }
+  },
 };
 
 appData.start();
