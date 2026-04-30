@@ -11,6 +11,20 @@ const appData = {
   allServicePrices: 0,
   fullPrice: 0,
   servicePercentPrice: 0,
+  // новые переменные
+  calculateBtn: null,
+  resetBtn: null,
+  addBtn: null,
+  percentBlocks: null,
+  numberBlocks: null,
+  rangeInput: null,
+  rangeValueSpan: null,
+  totalBase: null,
+  totalCount: null,
+  totalOther: null,
+  totalFull: null,
+  totalRollback: null,
+  screenBlocks: null,
 
   // Проверка числовая божественная
   isNumber(num) {
@@ -20,7 +34,6 @@ const appData = {
   // Проверка строки божественная
   isValidString(str) {
     if (!str || str.trim() === "") return false;
-    // попросил через нейронку накидать регулярку, явно сложнее с кучей проверок...
     return /[^\d\s]/.test(str);
   },
 
@@ -65,9 +78,58 @@ const appData = {
     } while (true);
   },
 
+  getHTMLcontent() {
+    // кнопки
+    appData.calculateBtn = document.getElementsByClassName("handler_btn")[0];
+    appData.resetBtn = document.getElementsByClassName("handler_btn")[1];
+    appData.addBtn = document.querySelector(".screen-btn");
+    console.log(appData.calculateBtn, appData.resetBtn, appData.addBtn);
+
+    // other-items
+    appData.percentBlocks = document.querySelectorAll(".other-items.percent");
+    appData.numberBlocks = document.querySelectorAll(".other-items.number");
+    console.log(
+      `проценты: ${appData.percentBlocks.length}, число: ${appData.numberBlocks.length}`,
+    );
+
+    // input range и span
+    appData.rangeInput = document.querySelector(
+      ".rollback input[type='range']",
+    );
+    appData.rangeValueSpan = document.querySelector(".rollback .range-value");
+    console.log(appData.rangeInput, appData.rangeValueSpan.textContent);
+
+    // total-input инпуты
+    const totalInputs = document.getElementsByClassName("total-input");
+    appData.totalBase = totalInputs[0];
+    appData.totalCount = totalInputs[1];
+    appData.totalOther = totalInputs[2];
+    appData.totalFull = totalInputs[3];
+    appData.totalRollback = totalInputs[4];
+    console.log(
+      appData.totalBase,
+      appData.totalCount,
+      appData.totalOther,
+      appData.totalFull,
+      appData.totalRollback,
+    );
+
+    // блоки screen
+    appData.screenBlocks = document.querySelectorAll(".screen");
+    console.log(`screen: ${appData.screenBlocks.length}`);
+  },
+
   asking() {
-    appData.title = appData.checkTheString("Как называется проект?", "абоба");
-    appData.title = appData.getTitle(appData.title);
+    // заголовок h1
+    const h1Element = document.getElementsByTagName("h1")[0];
+    appData.title = h1Element.textContent;
+    console.log(appData.title);
+    // appData.title = appData.checkTheString(
+    //   "Как называется проект?",
+    //   document.getElementsByTagName("h1")[0],
+    // );
+    // appData.title = appData.getTitle(appData.title);
+    // console.log(appData.title);
 
     appData.screens = appData.checkTheString(
       "Какие типы экранов нужно разработать?",
@@ -137,7 +199,7 @@ const appData = {
       `Стоимость за вычетом процента отката: ${appData.getServicePercentPrices()} руб.`,
     );
 
-    console.log("\n=== Все свойства и методы объекта appData");
+    console.log("Все свойства и методы объекта appData");
     for (let key in appData) {
       if (typeof appData[key] === "function") {
         console.log(`${key}: [method]`);
@@ -148,7 +210,11 @@ const appData = {
   },
 
   start() {
+    console.log('getHTMLcontent - новый блок с работой с селекторами');
+    appData.getHTMLcontent();
+    console.log('---------------------');
     appData.asking();
+    console.log('---------------------');
     appData.allServicePrices = appData.getAllServicePrices();
     appData.fullPrice = appData.getFullPrice();
     appData.servicePercentPrice = appData.getServicePercentPrices();
