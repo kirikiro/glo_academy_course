@@ -27,24 +27,24 @@ const appData = {
   screenBlocks: null,
 
   getHTMLcontent() {
-    appData.calculateBtn = document.getElementsByClassName("handler_btn")[0];
-    appData.resetBtn = document.getElementsByClassName("handler_btn")[1];
-    appData.addBtn = document.querySelector(".screen-btn");
+    this.calculateBtn = document.getElementsByClassName("handler_btn")[0];
+    this.resetBtn = document.getElementsByClassName("handler_btn")[1];
+    this.addBtn = document.querySelector(".screen-btn");
 
-    appData.percentBlocks = document.querySelectorAll(".other-items.percent");
-    appData.numberBlocks = document.querySelectorAll(".other-items.number");
+    this.percentBlocks = document.querySelectorAll(".other-items.percent");
+    this.numberBlocks = document.querySelectorAll(".other-items.number");
 
-    appData.rangeInput = document.querySelector(".rollback input[type='range']");
-    appData.rangeValueSpan = document.querySelector(".rollback .range-value");
+    this.rangeInput = document.querySelector(".rollback input[type='range']");
+    this.rangeValueSpan = document.querySelector(".rollback .range-value");
 
     const totalInputs = document.getElementsByClassName("total-input");
-    appData.totalBase = totalInputs[0];
-    appData.totalCount = totalInputs[1];
-    appData.totalOther = totalInputs[2];
-    appData.totalFull = totalInputs[3];
-    appData.totalRollback = totalInputs[4];
+    this.totalBase = totalInputs[0];
+    this.totalCount = totalInputs[1];
+    this.totalOther = totalInputs[2];
+    this.totalFull = totalInputs[3];
+    this.totalRollback = totalInputs[4];
 
-    appData.screenBlocks = document.querySelectorAll(".screen");
+    this.screenBlocks = document.querySelectorAll(".screen");
   },
 
   checkScreensFilled() {
@@ -72,51 +72,51 @@ const appData = {
   },
 
   initRange() {
-    if (!appData.rangeInput || !appData.rangeValueSpan) return;
+    if (!this.rangeInput || !this.rangeValueSpan) return;
     const updateDisplay = () => {
-      const val = appData.rangeInput.value;
-      appData.rangeValueSpan.textContent = val + "%";
-      appData.rollback = parseInt(val, 10);
+      const val = this.rangeInput.value;
+      this.rangeValueSpan.textContent = val + "%";
+      this.rollback = parseInt(val, 10);
     };
 
-    appData.rangeInput.addEventListener("input", () => {
+    this.rangeInput.addEventListener("input", () => {
       updateDisplay();
 
-      if (appData.isCalculated) {
-        appData.updateRollbackOnly();
+      if (this.isCalculated) {
+        this.updateRollbackOnly();
       }
     });
     updateDisplay();
   },
 
   updateRollbackOnly() {
-    if (appData.baseFullPrice === 0) return;
-    const discount = appData.baseFullPrice * (appData.rollback / 100);
-    appData.servicePercentPrice = appData.baseFullPrice - discount;
-    appData.totalRollback.value = appData.servicePercentPrice;
+    if (this.baseFullPrice === 0) return;
+    const discount = this.baseFullPrice * (this.rollback / 100);
+    this.servicePercentPrice = this.baseFullPrice - discount;
+    this.totalRollback.value = this.servicePercentPrice;
   },
 
   bindAddScreen() {
-    if (!appData.addBtn) return;
+    if (!this.addBtn) return;
     const originalScreen = document.querySelector(".screen");
     if (!originalScreen) return;
 
-    appData.addBtn.addEventListener("click", () => {
+    this.addBtn.addEventListener("click", () => {
       const newScreen = originalScreen.cloneNode(true);
       const select = newScreen.querySelector("select");
       select.selectedIndex = 0;
       const input = newScreen.querySelector("input[type='text']");
       input.value = "";
-      const parent = appData.addBtn.parentNode;
-      parent.insertBefore(newScreen, appData.addBtn);
-      appData.isCalculated = false;
-      appData.baseFullPrice = 0;
+      const parent = this.addBtn.parentNode;
+      parent.insertBefore(newScreen, this.addBtn);
+      this.isCalculated = false;
+      this.baseFullPrice = 0;
     });
   },
 
   collectScreensData() {
     const screenDivs = document.querySelectorAll(".screen");
-    appData.screens = [];
+    this.screens = [];
     let totalCount = 0;
     let totalPrice = 0;
     screenDivs.forEach((div) => {
@@ -124,12 +124,12 @@ const appData = {
       const price = parseInt(select.value, 10);
       const type = select.options[select.selectedIndex].text;
       const count = parseInt(div.querySelector("input[type='text']").value, 10);
-      appData.screens.push({ type, price, count });
+      this.screens.push({ type, price, count });
       totalCount += count;
       totalPrice += price * count;
     });
-    appData.totalCount.value = totalCount;
-    appData.totalBase.value = totalPrice;
+    this.totalCount.value = totalCount;
+    this.totalBase.value = totalPrice;
     return totalPrice;
   },
 
@@ -146,34 +146,88 @@ const appData = {
         }
       }
     });
-    appData.totalOther.value = sum;
+    this.totalOther.value = sum;
     return sum;
   },
 
   performCalculation() {
-    if (!appData.checkScreensFilled()) return;
-    const screensCost = appData.collectScreensData();
-    const additionalCost = appData.collectAdditionalServices();
-    appData.baseFullPrice = screensCost + additionalCost;
-    appData.fullPrice = appData.baseFullPrice;
-    appData.totalFull.value = appData.fullPrice;
-    appData.isCalculated = true;
-    appData.updateRollbackOnly();
+    if (!this.checkScreensFilled()) return;
+    const screensCost = this.collectScreensData();
+    const additionalCost = this.collectAdditionalServices();
+    this.baseFullPrice = screensCost + additionalCost;
+    this.fullPrice = this.baseFullPrice;
+    this.totalFull.value = this.fullPrice;
+    this.isCalculated = true;
+    this.updateRollbackOnly();
   },
 
-// Обработчик кнопки рассчитать
+  toggleState(isCalculated) {
+    document.querySelectorAll("input[type='text'], select").forEach((elem) => {
+      elem.disabled = isCalculated;
+    });
+
+    this.calculateBtn.style.display = isCalculated ? "none" : "block";
+    this.resetBtn.style.display = isCalculated ? "block" : "none";
+  },
+
+  // Обработчик кнопки рассчитать
   bindCalculate() {
-    if (!appData.calculateBtn) return;
-    appData.calculateBtn.addEventListener("click", () => {
-      appData.performCalculation();
+    if (!this.calculateBtn) return;
+    this.calculateBtn.addEventListener("click", () => {
+      this.performCalculation();
+      this.toggleState(true);
     });
   },
 
+  reset() {
+    this.rollback = 0;
+    this.screens = [];
+    this.additionalServicesPrice = 0;
+    this.fullPrice = 0;
+    this.servicePercentPrice = 0;
+    this.isCalculated = false;
+    this.baseFullPrice = 0;
+
+    document
+      .querySelectorAll("input[type='text']")
+      .forEach((el) => (el.value = ""));
+    document.querySelectorAll("select").forEach((el) => (el.selectedIndex = 0));
+
+    document.querySelectorAll(".screen").forEach((el, i) => {
+      if (i > 0) el.remove();
+    });
+
+    document.querySelectorAll(".other-items").forEach((item) => {
+      const cb = item.querySelector(".custom-checkbox");
+      const price = item.querySelector("input[type='text']");
+      if (cb) cb.checked = false;
+      if (price) price.value = "";
+    });
+
+    if (this.totalBase) this.totalBase.value = "";
+    if (this.totalCount) this.totalCount.value = "";
+    if (this.totalOther) this.totalOther.value = "";
+    if (this.totalFull) this.totalFull.value = "";
+    if (this.totalRollback) this.totalRollback.value = "";
+
+    this.toggleState(false);
+
+    if (this.rangeInput) {
+      this.rangeInput.value = 0;
+      if (this.rangeValueSpan) this.rangeValueSpan.textContent = "0%";
+    }
+  },
+
   start() {
-    appData.getHTMLcontent();
-    appData.initRange();
-    appData.bindAddScreen();
-    appData.bindCalculate();
+    this.getHTMLcontent();
+    this.initRange();
+    this.bindAddScreen();
+    this.bindCalculate();
+
+    if (this.resetBtn) {
+      this.resetBtn.addEventListener("click", () => this.reset());
+      this.resetBtn.style.display = "none";
+    }
   },
 };
 
