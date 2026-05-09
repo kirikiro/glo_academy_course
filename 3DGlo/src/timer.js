@@ -3,9 +3,7 @@ const timer = (deadline) => {
   const timerMinutes = document.getElementById("timer-minutes");
   const timerSeconds = document.getElementById("timer-seconds");
 
-  const padZero = (num) => {
-    return num < 10 ? '0' + num : String(num);
-  };
+  const padZero = (num) => num < 10 ? '0' + num : String(num);
 
   const getTimeRemaining = () => {
     const dateStop = new Date(deadline).getTime();
@@ -35,13 +33,11 @@ const timer = (deadline) => {
     if (time.timeRemaining <= 0) {
       clearInterval(intervalId);
     }
-    // тик для чека
-    // console.log('тик:', new Date().toLocaleTimeString());
   };
 
-  updateClock();
-  
   const intervalId = setInterval(updateClock, 1000);
+  
+  updateClock();
 };
 
-timer("8 May 2026");
+timer("10 May 2026");
