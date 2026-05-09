@@ -1,0 +1,19 @@
+{
+  "name": "3dglo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack --mode development --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.106.2",
+    "webpack-cli": "^7.0.2"
+  }
+}

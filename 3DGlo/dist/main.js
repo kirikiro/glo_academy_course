@@ -1,0 +1,1 @@
+(()=>{"use strict";console.log("one.js загружен"),console.log("two.js загружен"),console.log("index.js запущен")})();
