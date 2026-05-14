@@ -40,4 +40,4 @@ const timer = (deadline) => {
   updateClock();
 };
 
-timer("10 May 2026");
+timer("19 May 2026");
