@@ -1,0 +1,22 @@
+import {phoneModal} from "./modules/phoneModal";
+import {servicesModal} from "./modules/servicesModal";
+import {documentModal} from "./modules/documents";
+import {swiperBenefits, swiperServices} from "./modules/swiperSliders";
+import {timer} from "./modules/timer";
+import {smoothScroll} from "./modules/smoothScroll";
+import {validation} from "./modules/formValidation";
+import {setupFormSubmissions} from "./modules/sendForm";
+import {calculate} from "./modules/calculator";
+import {initReviews} from "./modules/reviews";
+
+phoneModal();
+swiperBenefits();
+swiperServices();
+servicesModal();
+timer('28 may 2026');
+documentModal();
+smoothScroll();
+validation();
+calculate();
+setupFormSubmissions();
+initReviews();
